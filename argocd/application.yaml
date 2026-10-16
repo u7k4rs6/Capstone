@@ -1,0 +1,25 @@
+# GitOps: ArgoCD watches the Helm chart in this repo. CI bumps the image tag in values.yaml, ArgoCD syncs it.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: stockroom
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/u7k4rs6/Capstone.git
+    targetRevision: main
+    path: helm/stockroom
+    helm:
+      valueFiles:
+        - values.yaml
+        - values-eks.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: stockroom
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
