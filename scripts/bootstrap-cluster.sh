@@ -20,10 +20,11 @@ helm upgrade --install kube-prometheus-stack prometheus-community/kube-prometheu
   --set grafana.adminPassword="$GRAFANA_PASSWORD" --wait
 helm upgrade --install argocd argo/argo-cd -n argocd --create-namespace --wait
 
-# DB password lives in the cluster, not in git. ArgoCD passes it to Helm as a parameter.
-kubectl apply -f argocd/application.yaml
-kubectl -n argocd patch application stockroom --type merge \
-  -p "{\"spec\":{\"source\":{\"helm\":{\"parameters\":[{\"name\":\"postgres.password\",\"value\":\"$DB_PASSWORD\"}]}}}}"
+# DB password lives in the cluster, not in git. It's injected before the first apply so
+# Postgres never initializes with the placeholder password.
+kubectl patch --local -f argocd/application.yaml --type merge -o yaml \
+  -p "{\"spec\":{\"source\":{\"helm\":{\"parameters\":[{\"name\":\"postgres.password\",\"value\":\"$DB_PASSWORD\"}]}}}}" \
+  | kubectl apply -f -
 
 echo
 echo "ArgoCD admin password:"
