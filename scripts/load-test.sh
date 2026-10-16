@@ -1,8 +1,14 @@
 #!/usr/bin/env bash
 # Generates traffic so Grafana panels and the HPA have something to show.
-# Usage: URL=http://<ingress-host> ./scripts/load-test.sh [requests]
+# Usage: ./scripts/load-test.sh [requests]
+# Finds the ingress load balancer on its own. Falls back to the kind setup on localhost:8081.
 set -euo pipefail
-URL="${URL:-http://localhost:8080}"
+if [[ -z "${URL:-}" ]]; then
+  LB=$(kubectl -n ingress-nginx get svc ingress-nginx-controller \
+    -o jsonpath='{.status.loadBalancer.ingress[0].hostname}{.status.loadBalancer.ingress[0].ip}' 2>/dev/null || true)
+  URL="http://${LB:-localhost:8081}"
+fi
+echo "hitting $URL"
 N="${1:-1000}"
 
 for i in $(seq 1 "$N"); do

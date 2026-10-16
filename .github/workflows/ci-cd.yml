@@ -16,7 +16,7 @@ concurrency:
 jobs:
   test:
     name: Test (pytest + frontend build)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
 
@@ -51,7 +51,7 @@ jobs:
   build-scan-push:
     name: Build, scan, push (${{ matrix.service }})
     needs: test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
@@ -99,7 +99,7 @@ jobs:
     name: Deploy (bump Helm tag for ArgoCD)
     needs: build-scan-push
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     permissions:
       contents: write
     steps:

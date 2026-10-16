@@ -38,7 +38,7 @@ kubectl apply -f k8s/namespace.yaml
 helm upgrade --install stockroom ./helm/stockroom -n stockroom \
   --set backend.image.repository=stockroom-backend --set backend.image.tag=local \
   --set frontend.image.repository=stockroom-frontend --set frontend.image.tag=local \
-  --set ingress.host="" --wait
+  --set ingress.host="" --set postgres.password=kind-local --wait
 
 kubectl -n stockroom get pods,svc,ingress,hpa
 echo "App:     http://localhost:8081"

@@ -2,14 +2,14 @@
 
 Target: 10 to 12 minutes. Record the screen with OBS or the built-in recorder, export as MP4, save it here as `demo/presentation.mp4`.
 
-If the MP4 is over 100 MB, GitHub will reject the push. Either compress it (`ffmpeg -i in.mp4 -vcodec libx264 -crf 28 demo/presentation.mp4`) or attach it to a GitHub Release and link it below.
+If the MP4 is over 100 MB, GitHub will reject the push. Either compress it (`ffmpeg -i in.mp4 -vcodec libx264 -crf 28 demo/presentation.mp4`) or attach it to a GitHub Release and link it from the README.
 
 ## Before you hit record
 
 ```bash
 cd terraform && terraform apply                 # ~15 min, do this first
 $(terraform output -raw configure_kubectl)
-cd .. && GRAFANA_PASSWORD=... DB_PASSWORD=... ./scripts/bootstrap-cluster.sh
+cd .. && ./scripts/bootstrap-cluster.sh
 kubectl -n argocd get application stockroom     # wait for Synced / Healthy
 ```
 
@@ -75,7 +75,7 @@ Targets page, filter to `stockroom-backend`, show all UP.
 Run the load test in a terminal and let the dashboard move:
 
 ```bash
-URL=http://<load-balancer-host> ./scripts/load-test.sh 1500
+./scripts/load-test.sh 1500
 ```
 
 Point out requests/sec, p95 latency, error rate, stock movements. Optional: `kubectl get hpa -n stockroom -w` to show it scaling.

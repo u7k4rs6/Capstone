@@ -2,8 +2,14 @@
 # Installs the cluster add-ons the app depends on, then hands deployment over to ArgoCD.
 # Run after `aws eks update-kubeconfig` (or against a kind cluster).
 set -euo pipefail
-GRAFANA_PASSWORD="${GRAFANA_PASSWORD:?set GRAFANA_PASSWORD}"
-DB_PASSWORD="${DB_PASSWORD:?set DB_PASSWORD}"
+cd "$(dirname "$0")/.."
+
+# Reuse passwords from a previous run, otherwise generate them. cluster.env is gitignored.
+[[ -f cluster.env ]] && source cluster.env
+GRAFANA_PASSWORD="${GRAFANA_PASSWORD:-$(openssl rand -hex 12)}"
+DB_PASSWORD="${DB_PASSWORD:-$(openssl rand -hex 16)}"
+printf 'GRAFANA_PASSWORD=%s\nDB_PASSWORD=%s\n' "$GRAFANA_PASSWORD" "$DB_PASSWORD" > cluster.env
+chmod 600 cluster.env
 
 helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
 helm repo add metrics-server https://kubernetes-sigs.github.io/metrics-server/
@@ -27,6 +33,7 @@ kubectl patch --local -f argocd/application.yaml --type merge -o yaml \
   | kubectl apply -f -
 
 echo
+echo "Grafana: admin / $GRAFANA_PASSWORD  (saved in cluster.env)"
 echo "ArgoCD admin password:"
 kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d; echo
 echo "Ingress address:"

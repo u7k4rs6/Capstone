@@ -179,10 +179,10 @@ Everything runs as non-root with privilege escalation off.
 3. Run the bootstrap:
 
 ```bash
-GRAFANA_PASSWORD=... DB_PASSWORD=... ./scripts/bootstrap-cluster.sh
+./scripts/bootstrap-cluster.sh
 ```
 
-That installs ingress-nginx, metrics-server, kube-prometheus-stack and ArgoCD, applies the namespace + gp3 StorageClass, then creates the ArgoCD Application. From then on ArgoCD owns the deploy. Push to main, CI bumps the tag, ArgoCD syncs.
+It generates the Grafana and DB passwords (saved to `cluster.env`, which is gitignored), installs ingress-nginx, metrics-server, kube-prometheus-stack and ArgoCD, applies the namespace + gp3 StorageClass, then creates the ArgoCD Application. From then on ArgoCD owns the deploy. Push to main, CI bumps the tag, ArgoCD syncs.
 
 Useful checks:
 
@@ -197,7 +197,7 @@ You can also skip ArgoCD and deploy straight with Helm:
 
 ```bash
 helm upgrade --install stockroom ./helm/stockroom -n stockroom --create-namespace \
-  -f helm/stockroom/values-eks.yaml --set postgres.password=...
+  -f helm/stockroom/values-eks.yaml --set postgres.password="$(openssl rand -hex 16)"
 ```
 
 ### Local rehearsal on kind
@@ -212,8 +212,8 @@ helm upgrade --install stockroom ./helm/stockroom -n stockroom --create-namespac
 
 ```bash
 kubectl -n monitoring port-forward svc/kube-prometheus-stack-prometheus 9090:9090   # Status > Target health
-kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3001:80        # admin / $GRAFANA_PASSWORD
-URL=http://<load-balancer-host> ./scripts/load-test.sh 1000                          # make the graphs move
+kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3001:80        # admin / password from cluster.env
+./scripts/load-test.sh 1000                                                        # finds the load balancer itself
 ```
 
 | Prometheus targets | Grafana |

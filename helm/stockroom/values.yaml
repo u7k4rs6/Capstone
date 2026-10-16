@@ -23,8 +23,9 @@ postgres:
   image: postgres:17-alpine
   database: stockroom
   username: stockroom
-  # Demo only. Override with --set postgres.password=... or swap for External Secrets / RDS in real prod.
-  password: change-me
+  # No default on purpose: the chart refuses to install without one.
+  # bootstrap-cluster.sh generates it and hands it to ArgoCD. Real prod would use External Secrets or RDS.
+  password: ""
   storage: 2Gi
   storageClass: ""
 

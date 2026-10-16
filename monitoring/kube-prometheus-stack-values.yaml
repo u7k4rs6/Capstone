@@ -13,8 +13,7 @@ prometheus:
 
 grafana:
   enabled: true
-  # Set the real password at install time: --set grafana.adminPassword=...
-  adminPassword: change-me
+  # adminPassword is passed by bootstrap-cluster.sh, never stored in git.
   sidecar:
     dashboards:
       enabled: true

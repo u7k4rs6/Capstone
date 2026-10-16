@@ -6,7 +6,7 @@ metadata:
 type: Opaque
 stringData:
   username: {{ .Values.postgres.username | quote }}
-  password: {{ .Values.postgres.password | quote }}
+  password: {{ required "postgres.password is required" .Values.postgres.password | quote }}
 ---
 apiVersion: v1
 kind: Service
