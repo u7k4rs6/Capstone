@@ -1,0 +1,20 @@
+# Symptom: ImagePullBackOff. Debug with:
+#   kubectl -n stockroom get pods
+#   kubectl -n stockroom describe pod -l app=broken-image   (look at Events)
+# Fix: point the image at a tag that actually exists in GHCR.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: stockroom-broken-image
+  namespace: stockroom
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: broken-image}
+  template:
+    metadata:
+      labels: {app: broken-image}
+    spec:
+      containers:
+        - name: backend
+          image: ghcr.io/example/stockroom-backend:does-not-exist

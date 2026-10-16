@@ -1,0 +1,13 @@
+# Symptom: Service exists but traffic goes nowhere. Debug with:
+#   kubectl -n stockroom get endpoints broken-service      (empty)
+#   kubectl -n stockroom get pods --show-labels
+# Fix: selector must match the pod label (app: stockroom-backend) and targetPort must be 8000.
+apiVersion: v1
+kind: Service
+metadata:
+  name: broken-service
+  namespace: stockroom
+spec:
+  selector: {app: label-that-does-not-exist}
+  ports:
+    - {port: 8000, targetPort: 9999}
