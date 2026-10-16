@@ -2,7 +2,7 @@
 backend:
   image:
     repository: ghcr.io/u7k4rs6/stockroom-backend
-    tag: c2af859de66361ae43207c5a1cb943fe44642465
+    tag: 37fa59e86cb4c8a61cf67037792c2a4ac15a908b
   replicas: 2
   resources:
     requests: {cpu: 100m, memory: 128Mi}
@@ -11,7 +11,7 @@ backend:
 frontend:
   image:
     repository: ghcr.io/u7k4rs6/stockroom-frontend
-    tag: c2af859de66361ae43207c5a1cb943fe44642465
+    tag: 37fa59e86cb4c8a61cf67037792c2a4ac15a908b
   replicas: 2
   resources:
     requests: {cpu: 25m, memory: 32Mi}
