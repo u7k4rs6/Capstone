@@ -146,7 +146,8 @@ The first scan of the backend flagged 4 HIGHs: CVE-2025-47273 (setuptools path t
 
 - VPC `10.20.0.0/16` across 2 AZs, with 2 public subnets (load balancers, NAT) and 2 private subnets (nodes), plus 1 NAT gateway
 - EKS cluster (`stockroom-eks`, Kubernetes 1.35) with a managed node group of 2 x t3.large (scales 2 to 4)
-- Add-ons: vpc-cni, coredns, kube-proxy, aws-ebs-csi-driver (nodes get the EBS CSI policy so the Postgres PVC can get a gp3 volume)
+- Add-ons: vpc-cni, coredns, kube-proxy, eks-pod-identity-agent, aws-ebs-csi-driver
+- The EBS CSI driver gets its own IAM role through EKS Pod Identity, so it can create the gp3 volume for Postgres without borrowing node credentials
 
 ```bash
 cd terraform

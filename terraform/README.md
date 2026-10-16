@@ -1,6 +1,6 @@
 # Terraform: VPC + EKS
 
-Creates a VPC (2 public + 2 private subnets, 1 NAT gateway) and an EKS cluster with one managed node group. The EBS CSI driver add-on is included so the Postgres PVC can get a gp3 volume.
+Creates a VPC (2 public + 2 private subnets, 1 NAT gateway) and an EKS cluster with one managed node group. The EBS CSI driver add-on is included so the Postgres PVC can get a gp3 volume. It authenticates with its own IAM role through EKS Pod Identity.
 
 ```bash
 cp terraform.tfvars.example terraform.tfvars

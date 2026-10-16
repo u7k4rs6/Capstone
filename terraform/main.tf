@@ -46,7 +46,16 @@ module "eks" {
     vpc-cni = {
       before_compute = true
     }
-    aws-ebs-csi-driver = {}
+    eks-pod-identity-agent = {
+      before_compute = true
+    }
+    # Gets its own IAM role through Pod Identity. Nodes cap IMDS at 1 hop, so pods can't borrow node credentials.
+    aws-ebs-csi-driver = {
+      pod_identity_association = [{
+        role_arn        = module.ebs_csi_pod_identity.iam_role_arn
+        service_account = "ebs-csi-controller-sa"
+      }]
+    }
   }
 
   eks_managed_node_groups = {
@@ -55,11 +64,15 @@ module "eks" {
       min_size       = var.node_min_size
       max_size       = var.node_max_size
       desired_size   = var.node_desired_size
-
-      # Lets the EBS CSI driver create volumes for the Postgres PVC.
-      iam_role_additional_policies = {
-        ebs_csi = "arn:aws:iam::aws:policy/service-role/AmazonEBSCSIDriverPolicy"
-      }
     }
   }
+}
+
+# IAM role the EBS CSI driver uses to create gp3 volumes for the Postgres PVC.
+module "ebs_csi_pod_identity" {
+  source  = "terraform-aws-modules/eks-pod-identity/aws"
+  version = "~> 2.9"
+
+  name                      = "${var.cluster_name}-ebs-csi"
+  attach_aws_ebs_csi_policy = true
 }
