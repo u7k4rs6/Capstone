@@ -23,6 +23,8 @@ dist/
 *.tfvars
 !*.tfvars.example
 crash.log
+tfplan
+*.tfplan
 
 # Editors / OS
 .idea/
