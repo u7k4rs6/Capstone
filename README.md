@@ -221,6 +221,24 @@ kubectl -n monitoring port-forward svc/kube-prometheus-stack-grafana 3001:80    
 |---|---|
 | ![targets](docs/screenshots/prometheus-targets.png) | ![grafana](docs/screenshots/grafana.png) |
 
+## Evidence
+
+All captured from the real runs (EKS in ap-south-1, GitHub Actions, local Docker).
+
+| Rubric item | Screenshot |
+|---|---|
+| M1 app in the browser via ingress (AWS ELB) | [eks-app-ingress.png](docs/screenshots/eks-app-ingress.png) |
+| M2 `pytest -v` | [pytest.png](docs/screenshots/pytest.png) |
+| M3 commit history | [git-log.png](docs/screenshots/git-log.png) |
+| M4 `docker compose up --build` + localhost:3000 | [docker-compose.png](docs/screenshots/docker-compose.png), [app-localhost-3000.png](docs/screenshots/app-localhost-3000.png) |
+| M5 green pipeline, GHCR SHA tags | [github-actions.png](docs/screenshots/github-actions.png), [ghcr.png](docs/screenshots/ghcr.png) |
+| M6 Trivy output | [trivy.png](docs/screenshots/trivy.png) |
+| M7 `terraform plan` / `apply` | [terraform-plan.png](docs/screenshots/terraform-plan.png), [terraform-apply.png](docs/screenshots/terraform-apply.png) |
+| M8 pods, svc/ingress/hpa, helm | [eks-kubectl-pods.png](docs/screenshots/eks-kubectl-pods.png), [eks-kubectl-svc.png](docs/screenshots/eks-kubectl-svc.png), [eks-helm-list.png](docs/screenshots/eks-helm-list.png), [eks-helm-install.png](docs/screenshots/eks-helm-install.png) |
+| M9 `/metrics`, Prometheus targets, Grafana | [eks-metrics.png](docs/screenshots/eks-metrics.png), [eks-prometheus-targets.png](docs/screenshots/eks-prometheus-targets.png), [grafana.png](docs/screenshots/grafana.png) |
+
+`helm list` shows the platform charts (ingress-nginx, metrics-server, kube-prometheus-stack, argocd). The app itself is deployed by ArgoCD, which renders the same Helm chart, so `eks-helm-install.png` shows `helm upgrade --install` passing a server-side dry run against the cluster.
+
 ## Troubleshooting lab
 
 ```bash
