@@ -1,0 +1,4 @@
+# EKS: gp3 volumes via the EBS CSI driver that Terraform installs.
+postgres:
+  storageClass: gp3
+  storage: 5Gi

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: stockroom
+description: StockRoom inventory app (React + FastAPI + PostgreSQL)
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

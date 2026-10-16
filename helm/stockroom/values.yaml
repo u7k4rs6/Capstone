@@ -1,0 +1,48 @@
+# Image tags below are bumped by CI on every push to main. ArgoCD picks up the commit and syncs.
+backend:
+  image:
+    repository: ghcr.io/u7k4rs6/stockroom-backend
+    tag: latest
+  replicas: 2
+  resources:
+    requests: {cpu: 100m, memory: 128Mi}
+    limits: {cpu: 500m, memory: 384Mi}
+
+frontend:
+  image:
+    repository: ghcr.io/u7k4rs6/stockroom-frontend
+    tag: latest
+  replicas: 2
+  resources:
+    requests: {cpu: 25m, memory: 32Mi}
+    limits: {cpu: 200m, memory: 128Mi}
+
+imagePullSecrets: []
+
+postgres:
+  image: postgres:17-alpine
+  database: stockroom
+  username: stockroom
+  # Demo only. Override with --set postgres.password=... or swap for External Secrets / RDS in real prod.
+  password: change-me
+  storage: 2Gi
+  storageClass: ""
+
+ingress:
+  enabled: true
+  className: nginx
+  # Empty host matches any hostname, handy when you only have the load balancer DNS name.
+  host: ""
+
+hpa:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+  targetCPUUtilizationPercentage: 60
+
+monitoring:
+  serviceMonitor:
+    enabled: true
+    interval: 15s
+  grafanaDashboard:
+    enabled: true
