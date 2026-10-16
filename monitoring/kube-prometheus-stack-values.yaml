@@ -1,0 +1,32 @@
+# helm install kube-prometheus-stack prometheus-community/kube-prometheus-stack -n monitoring -f this-file
+alertmanager:
+  enabled: false
+
+prometheus:
+  prometheusSpec:
+    # Scrape every ServiceMonitor in every namespace, not just ones labelled for this release.
+    serviceMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorNamespaceSelector: {}
+    retention: 2d
+    resources:
+      requests: {cpu: 100m, memory: 512Mi}
+
+grafana:
+  enabled: true
+  # Set the real password at install time: --set grafana.adminPassword=...
+  adminPassword: change-me
+  sidecar:
+    dashboards:
+      enabled: true
+      label: grafana_dashboard
+      searchNamespace: ALL
+
+# EKS (and kind) don't expose control-plane metrics to workloads. Turning these off avoids red DOWN targets.
+kubeControllerManager:
+  enabled: false
+kubeScheduler:
+  enabled: false
+kubeEtcd:
+  enabled: false
+kubeProxy:
+  enabled: false
